@@ -1,0 +1,6 @@
+lambda_face_recognition_prebuilt/deps.zip
+env
+build
+*.egg-info
+dist
+env
