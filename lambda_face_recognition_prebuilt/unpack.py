@@ -1,13 +1,22 @@
-from safe_extractor import safe_extractor
 import os
 import ctypes
 import sys
+from io import BytesIO
+from zipfile import ZipFile
+import requests
 
-deps_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'deps.zip')
+from safe_extractor import safe_extractor
+import requests
+
 deps_install='/tmp/'
+deps_download='https://s3.amazonaws.com/lambda_face_recognition_prebuilt/deps.zip'
 
-print("Unpacking '{}' into '{}'.".format(deps_path, deps_install))
-safe_extractor.unzip_it(deps_path, deps_install)
+print("Downloading '{}' into memory. If this fails, you may need to increase the memory limit.".format(deps_download))
+url = requests.get(deps_download)
+zipfile = ZipFile(BytesIO(url.content))
+
+print("Unpacking in memory zip archive into '{}'.".format(deps_install))
+zipfile.extractall(deps_install)
 
 print("Recursively loading all libs from '{}'.".format(deps_install))
 for d, dirs, files in os.walk(deps_install):
